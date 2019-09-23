@@ -1,0 +1,71 @@
+Reactive forms:
+input element state: pritine, dirty 
+
+-FormControl - track values and states for an individual input element such as an input box
+-FormGroup - track values and states of a group of form controls -> <form (ngSubmit)="save()"> ... </form>
+
+-Form Model - data structure that represents the HTML form
+
+-Template-driven forms - data binding is key
+--use ngModel for two-way binding to allow data property value in a component class and user-entered entries in sync
+--Angular automatically generates the Form Model, formGroup, and formControl instances for us 
+
+-Reactive forms - no data binding in the HTML template
+--shift the responsibilities for creating form model to a class 
+--template - bind input elements to the form model (instead of binding them to data model properties) defining in the component class 
+--Anular will not create a form model for us. Instead, we create it ourself in a component clas 
+-- no need for template reference variable 
+--no two-way binding 
+--validation is defined in a class - this means no validation attribute in the HTML template
+--we still have a from element that includes 'formGroup' directive to bind to the form model defined in a component class
+--each input element has to have formControlName directive
+
+-Directives
+--template-driven - to get a form control state, use hash-tag e.g. #firstNameVar to create template reference variable 
+
+-touched element - when a user enters and leaves the field without modifying it resulting in blank field
+-dirty element- when a text is entered to an input box
+
+Chapter 4: Building a reactive form
+-less HTML code and more code in component class 
+-Form Model
+--root FormGroup contains properties to retain state 
+--FormControl for each input element but not every input element needs to have FormControl to track changes such as check box 
+--nested FormGroups
+--FormArrays
+-data model != form model
+- a form group includes a set of form control 
+-Accessing the form model properties to check the state of an input element such as if the firstName form control property was touched or valid
+
+[ngClass]="{'is-invalid': (customerForm.get('firstName').touched || customerForm.get('firstName').dirty) && !customerForm.get('firstName').valid }" />
+
+example for firstName:
+the firstName becomes valid when (dirty) texts are entered up to 3 characters. This means if dirty is false, valid is also false (!customerForm.get('firstName').valid means 'invalid') 
+true || false (not entered any char) = true && true = true
+true || false (entered chars < 3) = true && true = true
+true || true (entered chars > 3) = true && false = false
+
+-Update input element on the form from a component class
+--setValue - every formControl property needs to be set. Otherwise, an error will occur.
+--patchValue - some property can have missing value.
+
+-FormBuilder  
+--provided as a service
+--no need to create an instance of FormGroup
+--as usual, import ReactiveFormsModule to the Angular Module
+
+ /* without using FormBuilder, you need to create an instance of FormGroup and FormControl 
+    this.customerForm = new FormGroup({
+      // input elements
+      firstName: new FormControl(),
+      lastName: new FormControl(),
+      email: new FormControl(),
+      // set a default value of sendCatalog to true
+      sendCatalog: new FormControl(true)
+    });
+    */
+
+Summary:
+Template:
+-bind the form element to the FormGroup property defined in a Component Class - [formGroup] 
+-bind each input element to its associated FormControl defined in a Component Class - formControlName 

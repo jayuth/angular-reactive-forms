@@ -61,43 +61,36 @@
                   type="email"
                   placeholder="Email (required)"
                   formControlName="email"
-                  [ngClass]="{'is-invalid': customerForm.get('emailGroup').errors ||
-                                            ((customerForm.get('emailGroup.email').touched || 
-                                            customerForm.get('emailGroup.email').dirty) && 
-                                            !customerForm.get('emailGroup.email').valid) }" />
+                  [ngClass]="{'is-invalid': emailMessage }" />
             <span class="invalid-feedback">
-              <span *ngIf="customerForm.get('emailGroup.email').errors?.required">
-                Please enter your email address.
-              </span>
-              <span *ngIf="customerForm.get('emailGroup.email').errors?.email">
-                Please enter a valid email address.
-              </span>
+              {{ emailMessage }}
             </span>
           </div>
         </div>
 
         <div class="form-group row mb-2">
-          <label class="col-md-2 col-form-label"
-                 for="confirmEmailId">Confirm Email</label>
-          <div class="col-md-8">
-            <input class="form-control"
-                   id="confirmEmailId"
-                   type="email"
-                   placeholder="Confirm Email (required)"
-                   formControlName="confirmEmail"
-                   [ngClass]="{'is-invalid': customerForm.get('emailGroup').errors ||
-                                             ((customerForm.get('emailGroup.confirmEmail').touched || 
-                                              customerForm.get('emailGroup.confirmEmail').dirty) && 
-                                              !customerForm.get('emailGroup.confirmEmail').valid) }" />
-            <span class="invalid-feedback">
-              <span *ngIf="customerForm.get('emailGroup.confirmEmail').errors?.required">
-                Please confirm your email address.
+            <label class="col-md-2 col-form-label"
+                  for="confirmEmailId">Confirm Email</label>
+            <div class="col-md-8">
+              <input class="form-control"
+                    id="confirmEmailId"
+                    type="email"
+                    placeholder="Confirm Email (required)"
+                    formControlName="confirmEmail"
+                    [ngClass]="{'is-invalid': customerForm.get('emailGroup').errors ||
+                                              ((customerForm.get('emailGroup.confirmEmail').touched || 
+                                                customerForm.get('emailGroup.confirmEmail').dirty) && 
+                                                !customerForm.get('emailGroup.confirmEmail').valid) }" />
+              <span class="invalid-feedback">
+                <span *ngIf="customerForm.get('emailGroup.confirmEmail').errors?.required">
+                  Please confirm your email address.
+                </span>
+                <!--we use emailGroup here instead of emailGroup.confirmEmail because emailGroup has an error collection-->
+                <span *ngIf="customerForm.get('emailGroup').errors?.match">
+                  The confirmation does not match the email address.
+                </span>
               </span>
-              <span *ngIf="customerForm.get('emailGroup').errors?.match">
-                The confirmation does not match the email address.
-              </span>
-            </span>
-          </div>
+            </div>
         </div>
       </div>  
 
@@ -127,8 +120,7 @@
               <input class="form-check-input"
                      type="radio"
                      value="email"
-                     formControlName="notification"
-                     (click)="setNotification('email')">Email
+                     formControlName="notification">Email
             </label>
           </div>
           <div class="form-check form-check-inline">
@@ -136,8 +128,7 @@
               <input class="form-check-input"
                      type="radio"
                      value="text"
-                     formControlName="notification"
-                     (click)="setNotification('text')">Text
+                     formControlName="notification">Text
             </label>
           </div>
         </div>

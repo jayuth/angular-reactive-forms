@@ -95,10 +95,25 @@ value == number?
 value > 0 
 value <= 5
 
--not matching email validation occurs when:
-emailControl = touched
-confirmControl = touched 
+-not matching email validation performs when:
+emailControl = prestine
+OR
+confirmControl = prestine
+-if either fields are prestine then null. e.g. email is touched but confirmEmail is not. At this point we can't compare email and confirm email yet 
+because we only have an email value but missing confirmEmail value.
+-if both are touched, we can validate if entered chars match
+if(emailControl.pristine || confirmControl.pristine){
+    return null;
+  }
+T || T = null
+F || T = T
+F || F = F
 
-
-
+Chapter 6: Reacting to changes
+use valueChanges as an event binding
+***syntax for watching value cahnges in FormControl
+this.customerForm.get('emailGroup.email');
+-customerForm is a FormGroup instance
+-emailGroup is a nested FormGroup
+-email is a FormControl
 

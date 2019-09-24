@@ -69,3 +69,36 @@ Summary:
 Template:
 -bind the form element to the FormGroup property defined in a Component Class - [formGroup] 
 -bind each input element to its associated FormControl defined in a Component Class - formControlName 
+
+Chapter 5: Validation
+-the first argument of a FormControl is a default value. The second arg is validation rule. 
+--If there are multiple rules, create an array of rules
+-Adjusting validation rules at runtime/ on the fly  
+--e.g. when the user clicks the email checkbox, the phone field will be optional 
+--when the user clicks the text checkbox, the email field will be optional, and the phone field will be required 
+-Custom validator
+-- e.g. rating: 1 to 5
+-- true when i > 5, i < 1, i != number, i == null 
+i > 0 && i <= 5
+
+--less than 0 means 'after 0'. This still counts zero
+--Factory function is used when creating a custom validator and passing a parameter
+
+-Cross-field Validation using nested FormGroup
+--e.g. email field and confirm email field
+
+-when an error occurs, the broken validation rule name will be added to an error collection for the FormGroup, not the individual FormControl
+
+rating 1-5
+
+value == number?
+value > 0 
+value <= 5
+
+-not matching email validation occurs when:
+emailControl = touched
+confirmControl = touched 
+
+
+
+

@@ -117,3 +117,77 @@ this.customerForm.get('emailGroup.email');
 -emailGroup is a nested FormGroup
 -email is a FormControl
 
+-Error collection contains rule names
+
+--valueChanges issue - no notification for focus value when the element is touched , error appears before the user finishes filling their input field 
+e.g. the user starts filling an email field but the error appers for them as 'invalid email' as soon as they type the first character
+this can be fixed by using debounceTime and throttleTime (emits a value, then ignored the subsequent values for a specific amount of time)
+
+Chapter 7: Dynamically duplicate input elements
+-if you want to duplicate multiple elements, use the FormGroup
+-FormArray holds a group of FormControl or FormGroup, access by index array
+
+rating
+range: 1 to 5
+invalid conditions:
+1. value > 5 = 6,7,8...
+2. value < 1 = 0,-1,-2,...
+-define possible conditions like above
+value can only be either > 5 or < 1 but not BOTH.
+So, we define value > 5 || value < 1  
+if either condition is false, then it's invalid
+3. if it's not a number = isNaN(value) && if value is not null (because the default of rating field is null)
+
+FormArray is used to hold multiple instances of the same input elements (FormGroup/FormControl)
+Loop through the FormArray
+
+**using a square bracket when working with a variable such as <div [formGroupName]="i">
+
+attribute binding - attr.for
+[disabled]="!addresses.valid" - the user can't add another address if the previous address is invalid or not done filling 
+
+Summary:
+-Define the input element(s) to duplicate
+-define a FormGroup if needed
+-refactor to make copies - create an instance of a FormControl
+-Create a FormArray - to hold multiple instances of duplicate elements
+-Loop through the FormArray - using ngFor in the template
+-Duplicate the input element(s) - add an add button to allow the user to acreate another address
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

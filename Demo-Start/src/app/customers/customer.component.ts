@@ -1,19 +1,32 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl, ValidatorFn, FormArray } from '@angular/forms';
 
 import { debounceTime } from 'rxjs/operators';
 
 import { Customer } from './customer';
 
 // custom validator with paramerter 
+/*
 function ratingRange(min: number, max: number): ValidatorFn{
   return (c: AbstractControl): { [key: string]: boolean } | null => {
-    // c = control
-    if(c.value !== null && (isNaN(c.value)) || c.value < 1 || c.value > 5){
+    // the default value of rating is 'null'. If the value is null then skip validation
+    // here we check if there is any entered input which is equal to this condition; c.value !== null 
+    if(c.value !== null && (isNaN(c.value) || c.value < min || c.value > max)){
+      console.log(c.value);
       // return a key value pair if the cobtroller is invalid
       return {'range': true};
     }
     // return null if the control is valid
+    return null;
+  };
+}
+*/
+function ratingRange(min: number, max: number): ValidatorFn {
+  return (c: AbstractControl): { [key: string]: boolean } | null => {
+    if (c.value !== null && (isNaN(c.value) || c.value < min || c.value > max)) {
+      console.log(c.value);
+      return { 'range': true };
+    }
     return null;
   };
 }
@@ -23,7 +36,7 @@ function emailMatcher(c: AbstractControl): { [key: string]: boolean } | null {
   const emailControl = c.get('email');
   const confirmControl = c.get('confirmEmail');
 
-  // wait until the user finished filling both email and confirmEmail before performing validation
+  // return valid if bot forms hasn't been touched yet
   if(emailControl.pristine || confirmControl.pristine){
     return null;
   }
@@ -45,6 +58,13 @@ export class CustomerComponent implements OnInit {
   // data model
   customer = new Customer();
   emailMessage: string;
+
+  // use a getter property here to prevent other code accidentally modify address instances
+  get addresses(): FormArray{
+    // this will return FormArray from address FormControl
+    // <FormArray> is a type that we want to cast to
+    return <FormArray>this.customerForm.get('addresses');
+  }
 
   private validationMessages = {
     // key-value pair validation rule name
@@ -71,9 +91,9 @@ export class CustomerComponent implements OnInit {
       rating: [null, ratingRange(1, 5)],
       // set a default value of sendCatalog to true
       sendCatalog: true,
-      addressType: 'home',
-      street1: '',
-      street2: ''
+      // allow user to enter multiple addresses. We use FormArray to hold address instances 
+      // we create one instance for an address
+      addresses: this.fb.array([ this.buildAddress() ]) 
     });
     
     // call FormControl from the FormGroup
@@ -90,6 +110,18 @@ export class CustomerComponent implements OnInit {
       // each character will make a call this method
       value => this.setMessage(emailControl)
     );
+  }
+
+  // create an instance of an address block FormGroup
+  buildAddress(): FormGroup {
+    return this.fb.group({
+      addressType: 'home',
+      street1: '',
+      street2: '',
+      city: '',
+      state: '',
+      zip: ''
+    })
   }
 
   populateTestData(): void {
@@ -115,6 +147,12 @@ export class CustomerComponent implements OnInit {
       this.emailMessage = Object.keys(c.errors).map(
         key => this.validationMessages[key]).join(' ');
     }
+  }
+
+  // when the user clicks add button, another new address instance will be created
+  addAddress(): void{
+    // this will call the getter method and push new address instance to FormArray
+    this.addresses.push(this.buildAddress());
   }
 
   // this method is for a checkbox. 

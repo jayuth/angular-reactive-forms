@@ -154,13 +154,88 @@ Summary:
 -Loop through the FormArray - using ngFor in the template
 -Duplicate the input element(s) - add an add button to allow the user to acreate another address
 
+Chapter 8: routing to a form
+CanActivate - check before routing a route
+CanDeactivate - check before leaving a current rout to another route
+
+<li><a class='nav-link' [routerLink]="['/products', '0', 'edit']">
+      Add Product</a></li>
+0 in the url means user wants to add a new product
+
+ACME application architecture
+-/products/0/edit tied to ProductEditComponent class and product-edit.component.html
 
 
+parameter changed without leaving the page, use an Observable 
+--e.g. the user could click add product while on the product edit form
 
+-HTTP requests are asynchronous which means while we are waiting for the HTTP response, 
+our application can still operate such as handling other user interactions and more.
+At some point in the future, the request is processed and we recieved the response.
 
+Chapter 9: CRUD
+steps:
+-import the Angular Http Service - import HttpClientModule to app.module.ts
+-Create the data access service
+-Inject the Angular Http Service
+-Import Observableand the observable operators
+-Write the code to issue each Http request
 
+How routing works for product-detail.component.html
+-Edit button:
+--[routerLink]="['/products', product.id, 'edit']"> // here only product.id is a variable
+--product.id is retrieved from ProductService
+--this will route to product-edit.component.html. Since the product.id is not 0, in the product-edit.component.ts,
+the pageTitle value property will be set to 'Add Product'.
 
+In Add Product/Edit Product page, if the FormGroup is dirty and the user attempts to leave the page, 
+CanDeactivate will be raised and ask if the user wants to leave:
+--if yes, the form will be cleared out, and the url is changed to /products/0/edit
+---the product id now is 0 so it navigates to 'Add Product' page
+--if no, the user will keep staying in the current page  
 
+--feature to add: edit product> if the product hasn't been editied , disable the 'Save' button. Otherwise, enable
+
+Since we use Reactive Forms, we don't use ngModel for two-way binding 
+so how can we mensure that data ib the backend in sync with the data entered by the user?
+
+Post vs Put
+Post (api/products)
+-w/o specifying Id
+-create a new resource when the server assigns the Id
+-update a set of resources
+-we use POST when we want to create a new product to allow the server to assign the appropriate Id
+
+Put(api/products/5) -> update product with Id=5 if it exists. If not, create a new product with Id=5
+-replaces data for a specific resource with an Id
+-create/update a the resource with the Id
+
+Asynchronous workflow:
+1.updateProduct(p) is called passing in p which is an updated product
+2.Then when the Http response including an Observable is returned from the updateProduct method, the subscribe will be notified/called
+3.if the product is saved successfully, we call onSaveComplete for final processing  
+
+Summary:
+Data Access Service & CRUD
+In a service class (product.service.ts):
+-create a method for each http request in a service class 
+-call the desired http method, pass in the Url
+-add error handling
+
+Use the service:
+-inject the Data Acess Service
+-call the subscribe method of the retruned observable
+-provide a function to handle an emiited item
+-provide an error function to handle any returned errors
+
+Final chapter:
+Template driven
+-use a template to generate a Form Model to track forms and input elements.
+-two-way binding
+
+Reactive Forms 
+- we build a Form Model in a component class using FormBuilder. The template then binds to the Form Model 
+-instead of two-way binding, we define an immutable data model
 
 
 
